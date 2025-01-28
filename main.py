@@ -1,6 +1,5 @@
 import time
 
-from pygame.examples.music_drop_fade import volume
 from rich import print
 import os
 import random
@@ -157,14 +156,14 @@ q_correct_answers = [q1_a, q2_a, q3_a, q4_a, q5_a, q6_a, q7_a, q8_a, q9_a, q10_a
 
 pygame.mixer.init()
 
-start_sound = pygame.mixer.Sound("start_sound.mp3")
-pygame.mixer.music.load("bg_music.mp3")
-fiftyfifty_sound = pygame.mixer.Sound("fiftyfifty.mp3")
-thinking_sound = pygame.mixer.Sound("thinking.mp3")
-wrong_ans_sound = pygame.mixer.Sound("wrong_ans.mp3")
-corr_ans_sound = pygame.mixer.Sound("corr_ans.mp3")
-win_sound = pygame.mixer.Sound("winning.mp3")
-zal_sound = pygame.mixer.Sound("zal.mp3")
+start_sound = pygame.mixer.Sound("sounds/start_sound.mp3")
+pygame.mixer.music.load("sounds/bg_music.mp3")
+fiftyfifty_sound = pygame.mixer.Sound("sounds/fiftyfifty.mp3")
+thinking_sound = pygame.mixer.Sound("sounds/thinking.mp3")
+wrong_ans_sound = pygame.mixer.Sound("sounds/wrong_ans.mp3")
+corr_ans_sound = pygame.mixer.Sound("sounds/corr_ans.mp3")
+win_sound = pygame.mixer.Sound("sounds/winning.mp3")
+zal_sound = pygame.mixer.Sound("sounds/zal.mp3")
 pygame.mixer.music.set_volume(0.5)
 a_flag = False
 if __name__ == "__main__":
